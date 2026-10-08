@@ -1,199 +1,127 @@
-import { useState } from 'react'
-import { BarChart2, Clock, Activity, Layout, Settings, Headphones } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { BarChart2, Activity, History, Settings, Maximize2, X, ChevronRight } from 'lucide-react'
 import { useInView } from '../hooks/useInView'
+import dashboardImg from '../assets/screenshots/dashboard.webp'
+import insightsImg from '../assets/screenshots/insights.webp'
+import historyImg from '../assets/screenshots/history.webp'
+import settingsImg from '../assets/screenshots/settings.webp'
 
 const screens = [
   {
     id: 'dashboard',
     label: 'Dashboard',
+    tagline: 'Daily Listening at a Glance',
+    description:
+      'Real-time tracking of total earbud listening time, daily session count, plus average and peak exposure levels.',
     icon: BarChart2,
-    preview: () => (
-      <div className="flex flex-col gap-2 p-3 h-full">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-[8px] font-semibold text-[#ccc]">Dashboard</span>
-          <div className="w-4 h-4 rounded-full bg-[#222] flex items-center justify-center">
-            <Headphones size={7} className="text-[#888]" strokeWidth={1.5} />
-          </div>
-        </div>
-        <div className="bg-[#1e1e1e] rounded-xl p-3 border border-[#2a2a2a]">
-          <p className="text-[7px] text-[#555] mb-0.5">Today</p>
-          <p className="text-xl font-bold text-[#e5e5e5]">2h 34m</p>
-          <div className="flex items-end gap-0.5 mt-2 h-6">
-            {[30,55,40,75,60,85,65].map((h,i) => (
-              <div key={i} className={`flex-1 rounded-sm ${i===5?'bg-[#888]':'bg-[#2a2a2a]'}`} style={{height:`${h}%`}} />
-            ))}
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-1.5">
-          {[['Avg Vol','62 dB'],['Sessions','3']].map(([k,v]) => (
-            <div key={k} className="bg-[#1e1e1e] rounded-xl p-2 border border-[#2a2a2a]">
-              <p className="text-[7px] text-[#555]">{k}</p>
-              <p className="text-sm font-bold text-[#d0d0d0]">{v}</p>
-            </div>
-          ))}
-        </div>
-        <div className="flex-1 bg-[#1e1e1e] rounded-xl p-2 border border-[#2a2a2a]">
-          <p className="text-[7px] text-[#555] mb-1.5">Wellness</p>
-          <div className="flex items-center gap-1.5">
-            <div className="h-1.5 rounded-full bg-[#2a2a2a] flex-1 overflow-hidden">
-              <div className="h-full bg-[#888] rounded-full" style={{width:'72%'}} />
-            </div>
-            <span className="text-[7px] text-[#888]">72%</span>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 'history',
-    label: 'History',
-    icon: Clock,
-    preview: () => (
-      <div className="flex flex-col gap-2 p-3 h-full">
-        <p className="text-[8px] font-semibold text-[#ccc] mb-1">Session History</p>
-        {[
-          {name:'Morning Walk',dur:'42m',vol:'58 dB',time:'7:30 AM'},
-          {name:'Work Focus',dur:'1h 12m',vol:'65 dB',time:'10:00 AM'},
-          {name:'Lunch Break',dur:'28m',vol:'55 dB',time:'1:00 PM'},
-          {name:'Commute Home',dur:'36m',vol:'70 dB',time:'6:00 PM'},
-        ].map((s,i) => (
-          <div key={i} className="flex items-center justify-between bg-[#1e1e1e] rounded-xl px-2.5 py-2 border border-[#2a2a2a]">
-            <div className="flex items-center gap-1.5">
-              <div className="w-5 h-5 rounded-lg bg-[#252525] flex items-center justify-center">
-                <Headphones size={8} className="text-[#666]" strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="text-[8px] font-medium text-[#ccc]">{s.name}</p>
-                <p className="text-[6px] text-[#444]">{s.time} · {s.vol}</p>
-              </div>
-            </div>
-            <p className="text-[7px] text-[#666]">{s.dur}</p>
-          </div>
-        ))}
-      </div>
-    ),
+    image: dashboardImg,
+    badge: 'Main View',
+    highlights: ['Listening duration counter', 'Average & maximum volume', 'Session breakdown link'],
   },
   {
     id: 'insights',
     label: 'Insights',
+    tagline: '7-Day Volume & Trend Analytics',
+    description:
+      'Interactive weekly volume histograms that reveal your heaviest listening days and help maintain safe sound levels.',
     icon: Activity,
-    preview: () => (
-      <div className="flex flex-col gap-2 p-3 h-full">
-        <p className="text-[8px] font-semibold text-[#ccc] mb-1">Weekly Insights</p>
-        <div className="bg-[#1e1e1e] rounded-xl p-2.5 border border-[#2a2a2a]">
-          <p className="text-[7px] text-[#555] mb-1">Listening Trend</p>
-          <div className="flex items-end gap-1 h-10">
-            {[40,60,45,80,55,70,65].map((h,i) => (
-              <div key={i} className="flex flex-col items-center gap-0.5 flex-1">
-                <div className={`w-full rounded-sm ${i===3?'bg-[#888]':'bg-[#2a2a2a]'}`} style={{height:`${h}%`}} />
-                <span className="text-[5px] text-[#444]">{'MTWTFSS'[i]}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        {[{label:'Avg Daily Time',value:'2h 18m'},{label:'Peak Vol Day',value:'Thursday'},{label:'Wellness Score',value:'8.2/10'}].map((item) => (
-          <div key={item.label} className="flex items-center justify-between bg-[#1e1e1e] rounded-xl px-2.5 py-2 border border-[#2a2a2a]">
-            <p className="text-[7px] text-[#555]">{item.label}</p>
-            <p className="text-[8px] font-semibold text-[#ccc]">{item.value}</p>
-          </div>
-        ))}
-      </div>
-    ),
+    image: insightsImg,
+    badge: 'Hearing Safety',
+    highlights: ['Weekly listening distribution', 'Most active day tracker', 'Peak volume exposure analysis'],
   },
   {
-    id: 'widget',
-    label: 'Widget',
-    icon: Layout,
-    preview: () => (
-      <div className="flex flex-col items-center justify-center gap-3 p-4 h-full">
-        <p className="text-[7px] text-[#444] uppercase tracking-wider">Home Screen</p>
-        <div className="w-full bg-[#1e1e1e] border border-[#2a2a2a] rounded-2xl p-3">
-          <div className="flex items-center gap-2 mb-2.5">
-            <Headphones size={10} className="text-[#888]" strokeWidth={1.5} />
-            <span className="text-[8px] font-medium text-[#aaa]">Earwise</span>
-          </div>
-          <p className="text-xl font-bold text-[#e5e5e5]">2h 34m</p>
-          <p className="text-[7px] text-[#555] mb-2">Today&apos;s listening</p>
-          <div className="flex items-end gap-0.5 h-4">
-            {[30,55,40,75,60,85,65].map((h,i) => (
-              <div key={i} className={`flex-1 rounded-sm ${i===5?'bg-[#777]':'bg-[#2a2a2a]'}`} style={{height:`${h}%`}} />
-            ))}
-          </div>
-        </div>
-        <div className="w-full grid grid-cols-2 gap-1.5">
-          <div className="bg-[#1e1e1e] rounded-xl p-2 border border-[#2a2a2a] text-center">
-            <p className="text-sm font-bold text-[#ccc]">62</p>
-            <p className="text-[6px] text-[#444]">Avg dB</p>
-          </div>
-          <div className="bg-[#1e1e1e] rounded-xl p-2 border border-[#2a2a2a] text-center">
-            <p className="text-sm font-bold text-[#ccc]">3</p>
-            <p className="text-[6px] text-[#444]">Sessions</p>
-          </div>
-        </div>
-      </div>
-    ),
+    id: 'history',
+    label: 'History',
+    tagline: 'Comprehensive Session Log',
+    description:
+      'Complete date-by-date archive of past sessions with exact timestamps, durations, and volume percentages.',
+    icon: History,
+    image: historyImg,
+    badge: 'Detailed Logs',
+    highlights: ['Calendar history view', 'Exact session durations', 'Volume percentage records'],
   },
   {
     id: 'settings',
     label: 'Settings',
+    tagline: 'Transparent & Privacy-First',
+    description:
+      'Complete visibility into Bluetooth connection detection, optional Firebase cloud backup, and battery optimization.',
     icon: Settings,
-    preview: () => (
-      <div className="flex flex-col gap-1.5 p-3 h-full">
-        <p className="text-[8px] font-semibold text-[#ccc] mb-1">Settings</p>
-        {[
-          {section:'Tracking',items:['Auto-detect BT','Background service','Boot restore']},
-          {section:'Data',items:['Cloud sync','Export data','Delete history']},
-          {section:'Appearance',items:['Theme','Widget style']},
-        ].map((group) => (
-          <div key={group.section} className="bg-[#1e1e1e] rounded-xl border border-[#2a2a2a] overflow-hidden">
-            <p className="text-[6px] text-[#444] uppercase tracking-wider px-2.5 pt-2">{group.section}</p>
-            {group.items.map((item, j) => (
-              <div key={item} className={`flex items-center justify-between px-2.5 py-1.5 ${j < group.items.length-1 ? 'border-b border-[#252525]' : ''}`}>
-                <p className="text-[7px] text-[#aaa]">{item}</p>
-                <div className="w-5 h-3 rounded-full bg-[#333] relative">
-                  <div className={`absolute w-2.5 h-2.5 rounded-full bg-[#888] top-0.5 ${j%2===0?'right-0.5':'left-0.5'}`} />
-                </div>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    ),
+    image: settingsImg,
+    badge: 'Preferences',
+    highlights: ['Optional Cloud Sync status', 'Nearby device permissions', 'Battery optimization toggle'],
   },
 ]
 
-function PhoneFrame({ label, icon: Icon, isActive, onClick, children }) {
+function PhoneFrame({ screen, isActive, onSelect, onOpenLightbox }) {
+  const Icon = screen.icon
+
   return (
     <div
-      className={`flex flex-col items-center gap-3 cursor-pointer transition-all duration-300 ${isActive ? 'scale-105' : 'opacity-50 hover:opacity-75'}`}
-      onClick={onClick}
+      onClick={onSelect}
+      className={`group relative flex flex-col items-center cursor-pointer transition-all duration-300 snap-center shrink-0 w-[230px] sm:w-[250px] md:w-[260px] lg:w-[265px] ${
+        isActive ? 'scale-[1.02] -translate-y-2' : 'opacity-70 hover:opacity-95 hover:-translate-y-1'
+      }`}
     >
+      {/* Ambient glow for active phone */}
       <div
-        className="relative rounded-[28px] border overflow-hidden transition-all duration-300"
-        style={{
-          width: '130px',
-          aspectRatio: '9/19',
-          background: '#111',
-          borderColor: isActive ? '#333' : '#1e1e1e',
-          boxShadow: isActive ? '0 20px 50px rgba(0,0,0,0.7)' : '0 8px 20px rgba(0,0,0,0.4)',
-        }}
+        className={`absolute -inset-2 rounded-[52px] blur-2xl transition-opacity duration-500 pointer-events-none ${
+          isActive ? 'bg-white/10 opacity-100' : 'opacity-0'
+        }`}
+      />
+
+      {/* Phone chassis */}
+      <div
+        className={`relative z-10 w-full aspect-[1220/2712] rounded-[42px] bg-[#131313] p-2.5 border transition-all duration-300 shadow-2xl ${
+          isActive
+            ? 'border-white/30 shadow-[0_25px_60px_rgba(0,0,0,0.9)] ring-1 ring-white/20'
+            : 'border-[#242424] shadow-[0_15px_35px_rgba(0,0,0,0.6)] group-hover:border-[#383838]'
+        }`}
       >
-        <div className="flex items-center justify-between px-3 pt-3 pb-1">
-          <span className="text-[6px] text-[#444]">9:41</span>
-          <div className="w-8 h-2 rounded-full bg-[#1a1a1a]" />
-          <div className="flex gap-0.5">
-            {[3,4.5,6].map((h,i) => (
-              <div key={i} className="w-[2px] bg-[#444] rounded-full" style={{height:h}} />
-            ))}
-          </div>
-        </div>
-        <div className="overflow-hidden" style={{height:'calc(100% - 28px)'}}>
-          {children}
+        {/* Screen bezel */}
+        <div className="relative w-full h-full rounded-[32px] overflow-hidden bg-black flex items-center justify-center">
+          <img
+            src={screen.image}
+            alt={`Earwise ${screen.label} Screen`}
+            className="w-full h-full object-cover object-top select-none pointer-events-none"
+            loading="lazy"
+          />
+
+          {/* Glare overlay */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-white/10 pointer-events-none" />
+
+          {/* Hover magnifier badge */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onOpenLightbox(screen)
+            }}
+            className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200 cursor-pointer shadow-lg"
+            title="Expand Screenshot"
+            aria-label={`Expand ${screen.label} Screenshot`}
+          >
+            <Maximize2 size={13} strokeWidth={2} />
+          </button>
         </div>
       </div>
-      <div className="flex items-center gap-1.5">
-        <Icon size={12} className={`transition-colors ${isActive ? 'text-[#aaa]' : 'text-[#444]'}`} strokeWidth={1.5} />
-        <span className={`text-xs font-medium transition-colors ${isActive ? 'text-[#bbb]' : 'text-[#444]'}`}>{label}</span>
+
+      {/* Label and Badge */}
+      <div className="mt-4 flex flex-col items-center text-center gap-1">
+        <div className="flex items-center gap-2">
+          <Icon
+            size={14}
+            className={`transition-colors duration-200 ${isActive ? 'text-white' : 'text-[#666] group-hover:text-[#aaa]'}`}
+            strokeWidth={1.75}
+          />
+          <span
+            className={`text-sm font-semibold tracking-tight transition-colors duration-200 ${
+              isActive ? 'text-white' : 'text-[#888] group-hover:text-[#e0e0e0]'
+            }`}
+          >
+            {screen.label}
+          </span>
+        </div>
+        <span className="text-[11px] text-[#555] tracking-wide">{screen.badge}</span>
       </div>
     </div>
   )
@@ -201,54 +129,170 @@ function PhoneFrame({ label, icon: Icon, isActive, onClick, children }) {
 
 export default function Screenshots() {
   const [active, setActive] = useState(0)
+  const [lightbox, setLightbox] = useState(null)
   const [titleRef, titleInView] = useInView({ threshold: 0.2 })
+
+  // Handle ESC key for lightbox
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') setLightbox(null)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  const currentScreen = screens[active]
 
   return (
     <section id="screenshots" className="py-24 md:py-32 relative overflow-hidden">
+      {/* Background accents */}
       <div className="absolute inset-0 bg-[#0d0d0d] pointer-events-none" />
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#2a2a2a] to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#2a2a2a] to-transparent" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-white/[0.015] rounded-full blur-[100px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-white/[0.015] rounded-full blur-[120px]" />
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-5 md:px-8">
+        {/* Section Header */}
         <div
           ref={titleRef}
-          className="mb-16 text-center"
+          className="mb-14 text-center"
           style={{
             opacity: titleInView ? 1 : 0,
             transform: titleInView ? 'translateY(0)' : 'translateY(20px)',
             transition: 'opacity 0.6s ease, transform 0.6s ease',
           }}
         >
-          <p className="section-label mb-3">App Screenshots</p>
+          <p className="section-label mb-3">Real App Screenshots</p>
           <h2 className="text-4xl md:text-5xl font-bold text-[#f0f0f0] tracking-tight max-w-xl mx-auto leading-tight">
-            Beautiful. Minimal. Functional.
+            Minimal. Clean. Purpose-built.
           </h2>
-          <p className="mt-4 text-[#666] max-w-sm mx-auto text-sm">
-            Every screen is designed for clarity — no clutter, just the insights you need.
+          <p className="mt-4 text-[#737373] max-w-md mx-auto text-base">
+            Take a look at the real Earwise interface — designed for distraction-free listening awareness.
           </p>
+
+          {/* Quick Tab Selector */}
+          <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
+            {screens.map((s, i) => {
+              const Icon = s.icon
+              const isSelected = active === i
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => setActive(i)}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer border ${
+                    isSelected
+                      ? 'bg-white text-black border-white shadow-[0_2px_12px_rgba(255,255,255,0.15)] scale-[1.02]'
+                      : 'bg-[#141414] text-[#737373] border-[#222] hover:border-[#383838] hover:text-[#ccc]'
+                  }`}
+                >
+                  <Icon size={13} strokeWidth={isSelected ? 2 : 1.5} />
+                  {s.label}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
-        <div className="flex justify-center items-end gap-4 md:gap-6 flex-wrap">
+        {/* Screenshots Showcase Row */}
+        <div className="flex justify-center items-start gap-5 lg:gap-6 overflow-x-auto snap-x snap-mandatory pt-4 pb-8 px-2 scrollbar-none">
           {screens.map((screen, i) => (
             <PhoneFrame
               key={screen.id}
-              label={screen.label}
-              icon={screen.icon}
+              screen={screen}
               isActive={active === i}
-              onClick={() => setActive(i)}
-            >
-              <screen.preview />
-            </PhoneFrame>
+              onSelect={() => setActive(i)}
+              onOpenLightbox={(s) => setLightbox(s)}
+            />
           ))}
         </div>
 
-        <p className="text-center text-xs text-[#333] mt-10">
-          Tap any screen to highlight it
+        {/* Active Screen Detail Card */}
+        <div className="mt-6 max-w-2xl mx-auto bg-[#121212] border border-[#222] rounded-2xl p-6 md:p-8 card-glass transition-all duration-300">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div>
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <span className="text-xs uppercase tracking-wider text-[#666] font-medium">{currentScreen.label} Screen</span>
+                <span className="w-1 h-1 rounded-full bg-[#555]" />
+                <span className="text-xs text-[#888]">{currentScreen.badge}</span>
+              </div>
+              <h3 className="text-xl font-bold text-[#f5f5f5] tracking-tight">{currentScreen.tagline}</h3>
+            </div>
+
+            <button
+              onClick={() => setLightbox(currentScreen)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#2e2e2e] bg-[#181818] text-xs text-[#ccc] hover:text-white hover:border-[#444] transition-all cursor-pointer w-fit shrink-0"
+            >
+              <Maximize2 size={12} />
+              Enlarge View
+            </button>
+          </div>
+
+          <p className="text-sm text-[#737373] leading-relaxed mb-5">
+            {currentScreen.description}
+          </p>
+
+          <div className="flex flex-wrap gap-2 pt-4 border-t border-[#1c1c1c]">
+            {currentScreen.highlights.map((highlight, idx) => (
+              <span
+                key={idx}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#171717] border border-[#252525] text-xs text-[#a3a3a3]"
+              >
+                <ChevronRight size={10} className="text-[#666]" />
+                {highlight}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <p className="text-center text-xs text-[#444] mt-8">
+          Tap any phone to focus · Click the zoom icon to view in full resolution
         </p>
       </div>
+
+      {/* Lightbox Modal */}
+      {lightbox && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setLightbox(null)}
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-fade-up"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-sm w-full bg-[#111] border border-[#2a2a2a] rounded-[36px] p-3 shadow-2xl flex flex-col items-center"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setLightbox(null)}
+              className="absolute -top-12 right-0 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="Close modal"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Header in modal */}
+            <div className="w-full px-3 py-2 flex items-center justify-between border-b border-[#1e1e1e] mb-2">
+              <span className="text-xs font-semibold text-[#f5f5f5]">{lightbox.label}</span>
+              <span className="text-[10px] text-[#666]">{lightbox.badge}</span>
+            </div>
+
+            {/* High-res Image */}
+            <div className="w-full aspect-[1220/2712] rounded-[28px] overflow-hidden bg-black">
+              <img
+                src={lightbox.image}
+                alt={`Earwise ${lightbox.label} Screenshot`}
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            <p className="text-[11px] text-[#666] mt-3 px-2 text-center pb-1">
+              {lightbox.description}
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

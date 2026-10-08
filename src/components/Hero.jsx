@@ -1,89 +1,26 @@
-import { Download, ChevronRight, Headphones, BarChart2, Shield } from 'lucide-react'
+import { Download, ChevronRight } from 'lucide-react'
+import dashboardImg from '../assets/screenshots/dashboard.webp'
 
 function PhoneMockup() {
   return (
-    <div className="relative w-[260px] md:w-[300px] mx-auto animate-float">
+    <div className="relative w-[270px] sm:w-[290px] md:w-[310px] mx-auto animate-float">
       {/* Glow behind phone */}
-      <div className="absolute inset-0 blur-[60px] bg-white/5 rounded-full scale-75 translate-y-8 animate-pulse-slow" />
+      <div className="absolute inset-0 blur-[60px] bg-white/10 rounded-full scale-75 translate-y-8 animate-pulse-slow" />
 
-      {/* Phone shell */}
-      <div className="relative z-10 w-full aspect-[9/19] rounded-[36px] bg-[#111] border border-[#2a2a2a] shadow-[0_40px_80px_rgba(0,0,0,0.7)] overflow-hidden">
-        {/* Status bar */}
-        <div className="flex items-center justify-between px-5 pt-4 pb-2">
-          <span className="text-[10px] text-[#555] font-medium">9:41</span>
-          <div className="w-16 h-4 bg-[#1a1a1a] rounded-full" />
-          <div className="flex gap-1">
-            {[3, 4, 5].map((h, i) => (
-              <div key={i} className={`w-[3px] rounded-full bg-[#555]`} style={{ height: h * 2 + 4 }} />
-            ))}
-          </div>
-        </div>
+      {/* Phone chassis */}
+      <div className="relative z-10 w-full aspect-[1220/2712] rounded-[44px] bg-[#121212] p-2.5 border border-[#2c2c2c] shadow-[0_35px_80px_rgba(0,0,0,0.85)] ring-1 ring-white/10">
+        {/* Screen bezel */}
+        <div className="relative w-full h-full rounded-[34px] overflow-hidden bg-black flex items-center justify-center">
+          <img
+            src={dashboardImg}
+            alt="Earwise Android App Dashboard"
+            className="w-full h-full object-cover object-top select-none pointer-events-none"
+            loading="eager"
+            fetchPriority="high"
+          />
 
-        {/* App content */}
-        <div className="px-4 py-2 flex flex-col gap-3 h-full">
-          {/* App header */}
-          <div className="flex items-center justify-between mt-1">
-            <div>
-              <p className="text-[10px] text-[#555] tracking-wider uppercase">Today</p>
-              <p className="text-sm font-semibold text-[#e5e5e5] leading-tight">Dashboard</p>
-            </div>
-            <div className="w-7 h-7 rounded-full bg-[#1e1e1e] border border-[#2a2a2a] flex items-center justify-center">
-              <Headphones size={12} className="text-[#888]" strokeWidth={1.5} />
-            </div>
-          </div>
-
-          {/* Main stat card */}
-          <div className="bg-[#1a1a1a] rounded-2xl p-3 border border-[#252525]">
-            <p className="text-[9px] text-[#555] uppercase tracking-wider mb-1">Listening Time</p>
-            <p className="text-2xl font-bold text-[#e5e5e5] leading-none">2h 34m</p>
-            <p className="text-[9px] text-[#555] mt-1">↑ 18% from yesterday</p>
-            {/* Mini chart bars */}
-            <div className="flex items-end gap-1 mt-3 h-8">
-              {[30, 50, 45, 70, 55, 80, 65].map((h, i) => (
-                <div
-                  key={i}
-                  className={`flex-1 rounded-sm ${i === 5 ? 'bg-[#888]' : 'bg-[#2a2a2a]'}`}
-                  style={{ height: `${h}%` }}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Two small stat cards */}
-          <div className="grid grid-cols-2 gap-2">
-            <div className="bg-[#1a1a1a] rounded-xl p-2.5 border border-[#252525]">
-              <BarChart2 size={12} className="text-[#666] mb-1" strokeWidth={1.5} />
-              <p className="text-[9px] text-[#555]">Avg Volume</p>
-              <p className="text-sm font-semibold text-[#ccc]">62 dB</p>
-            </div>
-            <div className="bg-[#1a1a1a] rounded-xl p-2.5 border border-[#252525]">
-              <Shield size={12} className="text-[#666] mb-1" strokeWidth={1.5} />
-              <p className="text-[9px] text-[#555]">Wellness</p>
-              <p className="text-sm font-semibold text-[#ccc]">Good</p>
-            </div>
-          </div>
-
-          {/* Session cards */}
-          <div className="space-y-2">
-            <p className="text-[9px] text-[#555] uppercase tracking-wider">Recent Sessions</p>
-            {[
-              { name: 'Morning Walk', dur: '42m', vol: '58 dB' },
-              { name: 'Work Focus', dur: '1h 12m', vol: '65 dB' },
-            ].map((s, i) => (
-              <div key={i} className="flex items-center justify-between bg-[#1a1a1a] rounded-xl px-3 py-2 border border-[#252525]">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-lg bg-[#252525] flex items-center justify-center">
-                    <Headphones size={9} className="text-[#777]" strokeWidth={1.5} />
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-medium text-[#ccc]">{s.name}</p>
-                    <p className="text-[8px] text-[#555]">{s.vol}</p>
-                  </div>
-                </div>
-                <p className="text-[9px] text-[#777]">{s.dur}</p>
-              </div>
-            ))}
-          </div>
+          {/* Glare gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-transparent to-white/10 pointer-events-none" />
         </div>
       </div>
     </div>

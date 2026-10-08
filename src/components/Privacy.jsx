@@ -91,11 +91,9 @@ export default function Privacy() {
 
         {/* Privacy cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {privacyPoints.map(({ icon: Icon, title, description }, i) => {
-            const [ref, inView] = [null, true] // simplified
-            return (
-              <div
-                key={title}
+          {privacyPoints.map(({ icon: Icon, title, description }, i) => (
+            <div
+              key={title}
                 className="group bg-[#111] border border-[#1e1e1e] rounded-2xl p-6 card-hover"
                 style={{
                   animation: `fadeUp 0.5s ease ${i * 80}ms both`,
@@ -111,8 +109,7 @@ export default function Privacy() {
                 <h3 className="font-semibold text-[#e0e0e0] text-sm mb-2 tracking-tight">{title}</h3>
                 <p className="text-xs text-[#5a5a5a] leading-relaxed">{description}</p>
               </div>
-            )
-          })}
+            ))}
         </div>
       </div>
     </section>
