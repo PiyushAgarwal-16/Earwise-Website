@@ -144,12 +144,34 @@ export default function Hero() {
           </div>
 
           {/* CTA buttons */}
-          <div id="download" className="flex flex-wrap gap-3 items-center">
-            <a href="#" className="btn-primary">
+          <div id="download" className="flex flex-wrap gap-3 items-center scroll-mt-28">
+            <a
+              id="download-android-btn"
+              href="https://play.google.com/store/apps/details?id=com.earwise.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary transition-all duration-300"
+            >
               <Download size={16} strokeWidth={2} />
               Download for Android
             </a>
-            <a href="#how-it-works" onClick={(e) => { e.preventDefault(); document.querySelector('#how-it-works').scrollIntoView({ behavior: 'smooth' }) }} className="btn-secondary">
+            <a
+              href="#how-it-works"
+              onClick={(e) => {
+                e.preventDefault()
+                const el = document.querySelector('#how-it-works')
+                if (el) {
+                  const navHeight = 72
+                  const elementPosition = el.getBoundingClientRect().top
+                  const offsetPosition = elementPosition + window.pageYOffset - navHeight
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                  })
+                }
+              }}
+              className="btn-secondary"
+            >
               Learn More
               <ChevronRight size={14} />
             </a>

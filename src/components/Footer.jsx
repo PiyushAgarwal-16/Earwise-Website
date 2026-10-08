@@ -6,7 +6,22 @@ export default function Footer() {
   const handleNav = (e, href) => {
     e.preventDefault()
     const el = document.querySelector(href)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
+    if (el) {
+      if (href === '#download') {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const btn = document.querySelector('#download-android-btn') || el
+        btn.classList.add('highlight-pulse')
+        setTimeout(() => btn.classList.remove('highlight-pulse'), 1600)
+      } else {
+        const navHeight = 72
+        const elementPosition = el.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - navHeight
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        })
+      }
+    }
   }
 
   return (
@@ -40,6 +55,14 @@ export default function Footer() {
             {[['#features','Features'],['#how-it-works','How It Works'],['#screenshots','Screenshots'],['#faq','FAQ']].map(([href, label]) => (
               <a key={href} href={href} onClick={(e) => handleNav(e, href)} className="text-sm text-[#444] hover:text-[#888] transition-colors">{label}</a>
             ))}
+            <a
+              href="https://play.google.com/store/apps/details?id=com.earwise.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-[#888] hover:text-[#f5f5f5] transition-colors flex items-center gap-1.5 font-medium"
+            >
+              Download on Google Play <ExternalLink size={11} />
+            </a>
           </div>
 
           {/* Legal links — includes Data Deletion */}

@@ -17,14 +17,57 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', onScroll, { passive: true })
+
+    if (window.location.hash === '#download') {
+      setTimeout(() => {
+        const el = document.querySelector('#download')
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          const btn = document.querySelector('#download-android-btn') || el
+          btn.classList.add('highlight-pulse')
+          setTimeout(() => btn.classList.remove('highlight-pulse'), 1600)
+        }
+      }, 300)
+    }
+
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   const handleNavClick = (e, href) => {
     e.preventDefault()
+    const isMobile = menuOpen
     setMenuOpen(false)
-    const el = document.querySelector(href)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
+
+    const scrollAction = () => {
+      const el = document.querySelector(href)
+      if (!el) return
+
+      if (href === '#download') {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const btn = document.querySelector('#download-android-btn') || el
+        btn.classList.remove('highlight-pulse')
+        // Force reflow
+        void btn.offsetWidth
+        btn.classList.add('highlight-pulse')
+        setTimeout(() => {
+          btn.classList.remove('highlight-pulse')
+        }, 1600)
+      } else {
+        const navHeight = 72
+        const elementPosition = el.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - navHeight
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        })
+      }
+    }
+
+    if (isMobile) {
+      setTimeout(scrollAction, 150)
+    } else {
+      scrollAction()
+    }
   }
 
   return (
