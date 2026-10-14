@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -45,6 +46,7 @@ export default function App() {
         <Route path="/"            element={<LandingPage />} />
         <Route path="/delete-data" element={<DataDeletion />} />
       </Routes>
+      <Analytics />
     </BrowserRouter>
   )
 }
