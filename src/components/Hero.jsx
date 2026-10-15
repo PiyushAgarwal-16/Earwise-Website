@@ -1,5 +1,6 @@
-import { Download, ChevronRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import dashboardImg from '../assets/screenshots/dashboard.webp'
+import googlePlayBadge from '../assets/google-play-badge.webp'
 
 function PhoneMockup() {
   return (
@@ -81,16 +82,21 @@ export default function Hero() {
           </div>
 
           {/* CTA buttons */}
-          <div id="download" className="flex flex-wrap gap-3 items-center scroll-mt-28">
+          <div id="download" className="flex flex-wrap gap-4 items-center scroll-mt-28">
             <a
               id="download-android-btn"
               href="https://play.google.com/store/apps/details?id=com.earwise.app"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-primary transition-all duration-300"
+              className="inline-flex items-center justify-center h-[52px] w-[176px] rounded-full transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] focus:outline-none"
+              title="Download from Google Play Store"
+              aria-label="Download from Google Play Store"
             >
-              <Download size={16} strokeWidth={2} />
-              Download for Android
+              <img
+                src={googlePlayBadge}
+                alt="Get it on Google Play"
+                className="h-[52px] w-[176px] object-contain transition-all duration-300 hover:brightness-105"
+              />
             </a>
             <a
               href="#how-it-works"
@@ -107,10 +113,10 @@ export default function Hero() {
                   })
                 }
               }}
-              className="btn-secondary"
+              className="btn-secondary !h-[52px] !w-[176px] !py-0 !px-0 flex items-center justify-center !rounded-full transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
             >
-              Learn More
-              <ChevronRight size={14} />
+              <span>Learn More</span>
+              <ChevronRight size={15} />
             </a>
           </div>
 
